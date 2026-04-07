@@ -51,3 +51,5 @@ class ConstrutorAFN():
         afn.fim.set_final(False)
         afn.fim.add_transicao('epsilon', afn.inicio)
         afn.fim.add_transicao('epsilon', novo_fim)
+
+        return AFN(novo_inicio,novo_fim)
