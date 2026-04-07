@@ -1,5 +1,6 @@
 
 # fg
+from scanner_gen.gerador_afn import ConstrutorAFN
 
 class LeitorRegex:
 
@@ -86,3 +87,25 @@ class LeitorRegex:
 
         return saida
 
+    @staticmethod
+    def thompson_construction(rpn):
+        pilha = []
+
+        for e in rpn:
+            if not LeitorRegex.is_operador(e):
+                pilha.append(ConstrutorAFN.criar_simbolo(e))        
+            elif e == '.':
+                afn_2 = pilha.pop()
+                afn_1 = pilha.pop()
+                novo_afn = ConstrutorAFN.criar_concat(afn_1,afn_2)
+                pilha.append(novo_afn)
+            elif e == '|':
+                afn_2 = pilha.pop()
+                afn_1 = pilha.pop()
+                novo_afn = ConstrutorAFN.criar_uniao(afn_1,afn_2)
+                pilha.append(novo_afn)
+            elif e == '*':
+                novo_afn = ConstrutorAFN.criar_kleene(pilha.pop())
+                pilha.append(novo_afn)
+
+        return pilha[-1]
