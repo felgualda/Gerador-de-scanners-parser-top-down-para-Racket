@@ -23,7 +23,7 @@ class ConstrutorAFN():
     def criar_uniao(afn1, afn2):
         novo_inicio = Estado()
         novo_fim = Estado()
-        novo_fim.set_final()
+        novo_fim.set_final(True)
 
         novo_inicio.add_transicao('epsilon', afn1.inicio)
         novo_inicio.add_transicao('epsilon', afn2.inicio)
