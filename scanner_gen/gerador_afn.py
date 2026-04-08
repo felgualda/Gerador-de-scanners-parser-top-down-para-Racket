@@ -1,4 +1,5 @@
-
+from scanner_gen.EDs.estado_afn import AFN, EstadoAFN
+from scanner_gen.funcoes_afn import ConstrutorAFN
 # fg
 
 class LeitorRegex:
@@ -88,7 +89,6 @@ class LeitorRegex:
 
     @staticmethod
     def thompson_construction(rpn):
-        from scanner_gen.funcoes_afn import ConstrutorAFN
         pilha = []
 
         for e in rpn:
@@ -109,3 +109,21 @@ class LeitorRegex:
                 pilha.append(novo_afn)
 
         return pilha[-1]
+
+    @staticmethod
+    def get_afn(regex):
+        exp_op = LeitorRegex.revelar_operador(regex)
+        rpn = LeitorRegex.shunting_yard(exp_op)
+        return LeitorRegex.thompson_construction(rpn)
+    
+    @staticmethod
+    def get_afn_master(regex_list):
+
+        estado_inicial = EstadoAFN()
+
+        for token, regex in regex_list:
+            afn = LeitorRegex.get_afn(regex)
+            afn.fim.token_id = token
+            estado_inicial.add_transicao('epsilon',afn.inicio)
+
+        return AFN(estado_inicial,None)
