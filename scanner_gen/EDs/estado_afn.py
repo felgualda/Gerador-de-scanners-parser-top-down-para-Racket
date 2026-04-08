@@ -1,14 +1,15 @@
 # fg
 
-class Estado:
+class EstadoAFN:
     _contador_id = 0
 
     def __init__(self):
-        self.id = Estado._contador_id
-        Estado._contador_id += 1
+        self.id = EstadoAFN._contador_id
+        EstadoAFN._contador_id += 1
 
         self.transicoes = {}
         self.final = False
+        self.token_id = ''
 
     def add_transicao(self, simbolo, estado_destino):
         if simbolo not in self.transicoes:

@@ -1,55 +1,111 @@
+
 # fg
 
-from scanner_gen.estado import AFN, Estado
+class LeitorRegex:
 
-class ConstrutorAFN():
+    ### Esta função recebe uma expressão regular e explicita as concatenações, para que essa operação seja facilmente
+    ### reconhecível na próxima etapa do programa, que é gerar a notação polonesa reversa.
+    ### Exemplo: (ab|c)d -> (a.b|c).d
+    @staticmethod
+    def revelar_operador(regex):
+        elementos = []
+        i = 0
+
+        while i < len(regex):
+            if regex[i] == '\\':
+                elementos.append("\\" + regex[i + 1])
+                i += 2
+            else:
+                elementos.append(regex[i])
+                i += 1
+
+        #print(elementos)
+        result = ''
+            
+        for j in range (len(elementos)-1):
+            atual = elementos[j]
+            prox = elementos[j+1]
+
+            result += atual
+
+            if atual != '(' and atual != '|':
+                if prox != ')' and prox != '|' and prox != '*':
+                    result+= '.'
+            
+        if elementos:
+            result += elementos[-1]
+
+        return result
 
     @staticmethod
-    def criar_simbolo(caractere):
-        estado_inicio = Estado()
-        estado_fim = Estado()
-        estado_fim.set_final(True)
-
-        estado_inicio.add_transicao(caractere, estado_fim)
-        return AFN(estado_inicio, estado_fim)
+    def precedencia(op):
+        if op == '*': return 3
+        if op == '.': return 2
+        if op == '|': return 1
+        if op == '(': return 0
     
-    @staticmethod
-    def criar_concat(afn1, afn2):
-        afn1.fim.set_final(False)
-        afn1.fim.add_transicao('epsilon', afn2.inicio)
-        return AFN(afn1.inicio, afn2.fim)
+    def is_operador(sim):
+        if sim == '(' or sim == ')' or sim == '*' or sim == '.' or sim == '|':
+            return True
+        return False
     
+    ### Esta função recebe uma expressão regular com todos os operadores explícitos e aplica o algoritmo de
+    ### Shunting Yard de Dijkstra, para deixar a expressão na notação polonesa reversa, facilitando lidar com a
+    ### precedência da regex.
+    ### Exemplo: (a|b.c).d -> a b c . | d .
     @staticmethod
-    def criar_uniao(afn1, afn2):
-        novo_inicio = Estado()
-        novo_fim = Estado()
-        novo_fim.set_final(True)
+    def shunting_yard(regex):
+        operadores = []     # Pilha de operadores
+        saida = []          # Pilha de saída
 
-        novo_inicio.add_transicao('epsilon', afn1.inicio)
-        novo_inicio.add_transicao('epsilon', afn2.inicio)
+        i = 0
+        while i < len(regex):
+            if not LeitorRegex.is_operador(regex[i]):   # é letra ou bloco com \
+                if regex[i] == '\\':
+                    saida.append('\\' + regex[i+1])
+                    i += 2
+                else:
+                    saida.append(regex[i])
+                    i += 1
+            else:                                       # é operador
+                if regex[i] == '(':
+                    operadores.append(regex[i])
+                elif regex[i] == ')':
+                    o = operadores.pop()
+                    while o != '(':
+                        saida.append(o)
+                        o = operadores.pop()
+                else:
+                    while operadores and LeitorRegex.precedencia(operadores[-1]) >= LeitorRegex.precedencia(regex[i]):
+                        saida.append(operadores.pop())
+                    operadores.append(regex[i])
+                i += 1
 
-        afn1.fim.set_final(False)
-        afn2.fim.set_final(False)
+        while operadores:
+            saida.append(operadores.pop())
 
-        afn1.fim.add_transicao('epsilon', novo_fim)
-        afn2.fim.add_transicao('epsilon', novo_fim)
+        return saida
 
-        return AFN(novo_inicio, novo_fim)
-    
     @staticmethod
-    def criar_kleene(afn):
-        novo_inicio = Estado()
-        novo_fim = Estado()
+    def thompson_construction(rpn):
+        from scanner_gen.funcoes_afn import ConstrutorAFN
+        pilha = []
 
-        novo_fim.set_final(True)
+        for e in rpn:
+            if not LeitorRegex.is_operador(e):
+                pilha.append(ConstrutorAFN.criar_simbolo(e))        
+            elif e == '.':
+                afn_2 = pilha.pop()
+                afn_1 = pilha.pop()
+                novo_afn = ConstrutorAFN.criar_concat(afn_1,afn_2)
+                pilha.append(novo_afn)
+            elif e == '|':
+                afn_2 = pilha.pop()
+                afn_1 = pilha.pop()
+                novo_afn = ConstrutorAFN.criar_uniao(afn_1,afn_2)
+                pilha.append(novo_afn)
+            elif e == '*':
+                novo_afn = ConstrutorAFN.criar_kleene(pilha.pop())
+                pilha.append(novo_afn)
 
-        novo_inicio.add_transicao('epsilon', afn.inicio)
-        novo_inicio.add_transicao('epsilon', novo_fim)
-
-        afn.fim.set_final(False)
-
-        afn.fim.set_final(False)
-        afn.fim.add_transicao('epsilon', afn.inicio)
-        afn.fim.add_transicao('epsilon', novo_fim)
-
-        return AFN(novo_inicio,novo_fim)
+        return pilha[-1]
