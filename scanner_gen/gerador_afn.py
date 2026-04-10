@@ -37,6 +37,86 @@ class LeitorRegex:
             result += elementos[-1]
 
         return result
+    
+    @staticmethod
+    def prep(exp):
+        i = 0
+        while i < len(exp):
+            if exp[i] == '[':
+                if i > 0 and exp[i-1] == '\\':
+                    i += 1
+                    continue
+                
+                inicio_colchete = i
+                
+                j = i + 1
+                while j < len(exp) and exp[j] != ']':
+                    if exp[j] == '\\':
+                        j += 2
+                    else:
+                        j += 1
+                
+                if j < len(exp):
+                    fim_colchete = j
+                    conteudo = exp[inicio_colchete+1 : fim_colchete]
+                    
+                    itens = []
+                    k = 0
+                    while k < len(conteudo):
+                        if conteudo[k] == '\\':
+                            itens.append('\\' + conteudo[k+1])
+                            k += 2
+                        elif k + 2 < len(conteudo) and conteudo[k+1] == '-':
+                            inicio = ord(conteudo[k])
+                            fim = ord(conteudo[k+2])
+                            for char_code in range(inicio, fim + 1):
+                                itens.append(chr(char_code))
+                            k += 3
+                        else:
+                            itens.append(conteudo[k])
+                            k += 1
+                    
+                    substituicao = "(" + "|".join(itens) + ")"
+                    
+                    exp = exp[:inicio_colchete] + substituicao + exp[fim_colchete+1:]
+                    
+                    i = inicio_colchete + len(substituicao) - 1
+            i += 1
+            
+        i = 0
+        while i < len(exp):
+            if exp[i] in ['+', '?']:
+                if i > 0 and exp[i-1] == '\\':
+                    i += 1
+                    continue
+                
+                operador = exp[i]
+                fim_op = i
+                inicio_op = i - 1
+                
+                if exp[inicio_op] == ')':
+                    pares = 1
+                    inicio_op -= 1
+                    while inicio_op >= 0 and pares > 0:
+                        if exp[inicio_op] == ')': pares += 1
+                        elif exp[inicio_op] == '(': pares -= 1
+                        inicio_op -= 1
+                    inicio_op += 1 
+                elif inicio_op - 1 >= 0 and exp[inicio_op - 1] == '\\':
+                    inicio_op -= 1
+                    
+                operando = exp[inicio_op:fim_op]
+                
+                if operador == '+':
+                    substituicao = f"{operando}({operando})*"
+                elif operador == '?':
+                    substituicao = f"({operando}|ε)"
+                    
+                exp = exp[:inicio_op] + substituicao + exp[i+1:]
+                i = inicio_op + len(substituicao) - 1 
+            i += 1
+            
+        return exp
 
     @staticmethod
     def precedencia(op):
@@ -93,7 +173,9 @@ class LeitorRegex:
 
         for e in rpn:
             if not LeitorRegex.is_operador(e):
-                pilha.append(ConstrutorAFN.criar_simbolo(e))        
+                simbolo_real = e[1] if str(e).startswith('\\') else e
+                
+                pilha.append(ConstrutorAFN.criar_simbolo(simbolo_real))     
             elif e == '.':
                 afn_2 = pilha.pop()
                 afn_1 = pilha.pop()
@@ -112,7 +194,8 @@ class LeitorRegex:
 
     @staticmethod
     def get_afn(regex):
-        exp_op = LeitorRegex.revelar_operador(regex)
+        expandido = LeitorRegex.prep(regex)
+        exp_op = LeitorRegex.revelar_operador(expandido)
         rpn = LeitorRegex.shunting_yard(exp_op)
         return LeitorRegex.thompson_construction(rpn)
     
