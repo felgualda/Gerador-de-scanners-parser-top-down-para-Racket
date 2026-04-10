@@ -2,7 +2,7 @@
 
 from scanner_gen.EDs.estado_afn import AFN, EstadoAFN
 
-class ConstrutorAFN():
+class ConstrutorAFN:
 
     @staticmethod
     def criar_simbolo(caractere):

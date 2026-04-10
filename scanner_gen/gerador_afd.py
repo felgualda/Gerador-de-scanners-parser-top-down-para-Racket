@@ -2,7 +2,7 @@
 from .EDs.estado_afd import AFD, EstadoAFD
 
 
-class Subset_construction():
+class Subset_construction:
 
     @staticmethod
     def epsilon_reach(estados):
