@@ -97,7 +97,7 @@ class Subset_construction():
                 if s_afn.final:
                     s_afd.final = True
 
-                    #if s_afn.token_id:
-                    #    s_afd.token_id = s_afn.token_id
-                    #    break
+                    if s_afn.token_id:
+                        s_afd.token_id = s_afn.token_id
+                        break
         return afd
