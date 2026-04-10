@@ -174,6 +174,9 @@ class LeitorRegex:
         for e in rpn:
             if not LeitorRegex.is_operador(e):
                 simbolo_real = e[1] if str(e).startswith('\\') else e
+
+                if simbolo_real == 'ε':
+                    simbolo_real = 'epsilon'
                 
                 pilha.append(ConstrutorAFN.criar_simbolo(simbolo_real))     
             elif e == '.':
