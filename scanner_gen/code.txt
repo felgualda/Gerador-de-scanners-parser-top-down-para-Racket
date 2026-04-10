@@ -1,0 +1,4 @@
+if #t
+    "test3"
+
+else 300
