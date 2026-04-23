@@ -1,0 +1,22 @@
+(define (verificar-status valor)
+    (if #t
+        (if #f
+            "impossivel"
+            (define resultado 100))
+        (define resultado -50)))
+
+(define (processar-dados x y)
+    (if (#t)
+        (define soma 500)
+        (define erro "falha-no-processamento")))
+
+(if #t
+    (define lista-teste (list 1 2 3))
+    (if #f
+        (define sub-lista (list 10 20))
+        300))
+
+(define (finalizar)
+    (if #t
+        "encerrado"
+        "erro-desconhecido"))

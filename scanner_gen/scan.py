@@ -2,6 +2,7 @@
 class Scan:
     def ler(caminho,afd):
         resultado = []
+        num_linha = 0
 
         with open(caminho, 'r', encoding='utf-8') as arquivo:
 
@@ -10,6 +11,7 @@ class Scan:
             pilha_simbolos = []
 
             for linha in arquivo:
+                num_linha += 1
                 linha = linha.strip()
                 
                 if not linha:
@@ -32,15 +34,15 @@ class Scan:
                         i += 1
                     else:
                         if estado_atual.final:
-                            resultado.append((estado_atual.token_id, "".join(pilha_simbolos)))
+                            resultado.append((estado_atual.token_id, "".join(pilha_simbolos), num_linha))
                             pilha_simbolos.clear()
                             estado_atual = afd.inicio
                         else:
                             print("CADEIA NÃO ACEITA")
                             break
 
-                if pilha_simbolos and estado_atual.final:
-                    resultado.append((estado_atual.token_id, "".join(pilha_simbolos)))     
+                if pilha_simbolos and estado_atual.final:       
+                    resultado.append((estado_atual.token_id, "".join(pilha_simbolos), num_linha)) 
                     pilha_simbolos.clear() 
                     estado_atual = afd.inicio               
 
