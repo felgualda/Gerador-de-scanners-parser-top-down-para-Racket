@@ -30,32 +30,24 @@ master = LeitorRegex.get_afn_master(regexs)
 afd = Subset_construction.afn_to_afd(master)
 
 scanner_gen.gerador_scanner.gerar_scanner(afd)
-lista_tokens = Scan.ler("examples/error_2 .txt", afd)
+lista_tokens = Scan.ler("examples/error_3.txt", afd)
 
 print(f"N de estados: {len(afd.estados)}")
 print("\nTokens identificados:")
 print(lista_tokens)
 print()
 
-print("--- Iniciando Análise Sintática ---")
+print("=== INICIANDO ANÁLISE SINTÁTICA ===")
 parser = Parser(lista_tokens)
 resultado = parser.parse()
 
 if not parser.errors:
     print("Programa aceito com sucesso!")
-    print("Árvore Sintática:")
-    for expr in resultado:
-        print_tree(expr)
-else:
-    print("\n--- FALHA NA ACEITAÇÃO (Lista de Erros) ---")
-    for i, erro in enumerate(resultado, 1):
-        print(f"{i}. {erro}")
-
-if isinstance(resultado, list):
-    print("Programa aceito com sucesso!")
-    print("Árvore Sintática:")
+    print("Estrutura da Árvore Sintática:")
     for i, expr in enumerate(resultado):
         print(f"\nExpressão #{i + 1}:")
         print_tree(expr)
 else:
-    print(resultado)
+    print("\n--- FALHA NA ACEITAÇÃO (Lista de Erros) ---")
+    for i, erro in enumerate(parser.errors, 1):
+        print(f"{i}. {erro}")
