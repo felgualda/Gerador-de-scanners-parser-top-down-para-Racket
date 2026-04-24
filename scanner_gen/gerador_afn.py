@@ -56,7 +56,6 @@ class ConstrutorAFN:
 
         return AFN(novo_inicio,novo_fim)
 
-
 class LeitorRegex:
 
     ### Esta função recebe uma expressão regular e explicita as concatenações, para que essa operação seja facilmente
