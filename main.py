@@ -30,7 +30,7 @@ master = LeitorRegex.get_afn_master(regexs)
 afd = Subset_construction.afn_to_afd(master)
 
 scanner_gen.gerador_scanner.gerar_scanner(afd)
-lista_tokens = Scan.ler("examples/error_3.txt", afd)
+lista_tokens = Scan.ler("examples/success_5.txt", afd)
 
 print(f"N de estados: {len(afd.estados)}")
 print("\nTokens identificados:")
