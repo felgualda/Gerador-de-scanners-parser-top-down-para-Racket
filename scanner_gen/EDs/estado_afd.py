@@ -26,37 +26,3 @@ class AFD:
 
     def add_estado(self, estado_afd):
         self.estados.append(estado_afd)
-
-    def visualizar(self):
-        print("\n=== Autômato Finito Determinístico (AFD) ===")
-        print(f"Estado Inicial: q{self.inicio.id}")
-        print("-" * 60)
-        print("Lista de Estados e Transições:\n")
-
-        estados_ordenados = sorted(self.estados, key=lambda e: e.id)
-
-        for estado in estados_ordenados:
-            marca_inicial = "->" if estado == self.inicio else "  "
-            marca_final = " *" if estado.final else "  "
-            nome_estado = f"q{estado.id}"
-
-            ids_afn = sorted([e.id for e in estado.conjunto_afn])
-            conjunto_str = "{" + ", ".join(f"q{i}" for i in ids_afn) + "}"
-            
-            token_str = f" [Token: {estado.token_id}]" if estado.token_id else ""
-
-            prefixo = f"{marca_inicial}{marca_final} {nome_estado}"
-            
-            print(f"{prefixo} (Origem AFN: {conjunto_str}){token_str}")
-
-            if not estado.transicoes:
-                espacamento = " " * len(prefixo)
-                print(f"{espacamento} : Nenhuma transição")
-            else:
-                for simbolo in sorted(estado.transicoes.keys()):
-                    destino = estado.transicoes[simbolo]
-                    espacamento = " " * len(prefixo)
-                    print(f"{espacamento} --({simbolo})--> q{destino.id}")
-            
-            print()
-        print("============================================================\n")

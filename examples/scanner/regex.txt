@@ -1,0 +1,38 @@
+
+LPAREN \(
+RPAREN \)
+LBRACKET \[
+RBRACKET \]
+DOT \.
+KW_MODULE_STAR module\*
+KW_MODULE module
+KW_BEGIN_FOR_SYNTAX begin-for-syntax
+KW_BEGIN0 begin0
+KW_BEGIN begin
+KW_DEFINE_VALUES define-values
+KW_DEFINE_SYNTAXES define-syntaxes
+KW_CASE_LAMBDA case-lambda
+KW_IF if 
+KW_LETREC_VALUES letrec-values
+KW_LET_VALUES let-values
+KW_SET set!
+KW_QUOTE_SYNTAX quote-syntax
+KW_QUOTE quote
+KW_WITH_CONT_MARK with-continuation-mark
+KW_EXPRESSION #%expression -> 
+KW_PLAIN_MOD_BEGIN #%plain-module-begin
+KW_PROVIDE #%provide
+KW_DECLARE #%declare
+KW_REQUIRE #%require
+KW_PLAIN_LAMBDA #%plain-lambda
+KW_PLAIN_APP #%plain-app
+KW_TOP #%top
+KW_VAR_REF #%variable-reference
+FALSE #f
+TRUE #t
+KW_LOCAL #:local 
+FLOAT (-|\e)([0-9])([0-9])^\.([0-9])([0-9])^
+INT (-|\e)([0-9])([0-9])^"
+STRING \"([a-z]|[A-Z]|[0-9]| |!|-|\?|_|\^|\.|,|:|;)^\"
+ID ([a-z]|[A-Z]|-|!|%|\&|\*|/|:|<|=|>|\?|~|_|\^|\+|#)([a-z]|[A-Z]|[0-9]|-|!|%|\&|\*|/|:|<|=|>|\?|~|_|\^|\+|#)^
+WHITESPACE ( |\t|\n|\r)( |\t|\n|\r)^

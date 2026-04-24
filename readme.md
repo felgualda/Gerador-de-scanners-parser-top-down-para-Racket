@@ -1,6 +1,10 @@
 # Gerador de Scanner + Parser (Racket)
 **Autores:** Bruno Porto Monteiro, Felipe Vieira Gualda Pereira, Gustavo Henrique Fontes Pereira
 
+## **Como executar?**
+Gerador de scanner: ```py gerar_scanner.py <caminho_lista_regex>``` \
+Analisador sintático (parser): ```py analisar_sintaxe.py <caminho_codigo_racket>```
+
 ## **O que temos?**
 ### ▪ scanner_gen/EDs/estado_afd.py:
 Definição das classes *EstadoAFD* e *AFD*, que são as estruturas de dados utilizadas para representar autômatos finitos determinísticos.
