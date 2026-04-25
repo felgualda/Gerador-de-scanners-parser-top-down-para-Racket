@@ -135,7 +135,7 @@ class Parser:
         return node
 
     def set_expression(self):
-        node = [self.eat('KW_SET')]
+        node = [self.eat('KW_SET' if self.current_token[0] == 'KW_SET' else 'ID')]
         node.append(self.eat('ID'))
         
         count = 0
@@ -151,7 +151,7 @@ class Parser:
         return node
     
     def module_expression(self):
-        node = [self.eat('KW_MODULE')]
+        node = [self.eat('KW_MODULE' if self.current_token[0] == 'KW_MODULE' else 'ID')]
         node.append(self.eat('ID'))
         node.append(self.eat('ID'))
         
@@ -160,7 +160,7 @@ class Parser:
         return node
     
     def lambda_expression(self):
-        node = [self.eat('KW_PLAIN_LAMBDA')]
+        node = [self.eat('KW_PLAIN_LAMBDA' if self.current_token[0] == 'KW_PLAIN_LAMBDA' else 'ID')]
         if self.current_token and self.current_token[0] == 'LPAREN':
             node.append(self.expression()) 
         else:
@@ -171,8 +171,8 @@ class Parser:
         return node
     
     def quote_expression(self):
-        node = [self.eat('KW_QUOTE')]
-        
+        node = [self.eat('KW_QUOTE' if self.current_token[0] == 'KW_QUOTE' else 'ID')]
+
         count = 0
         while self.current_token and self.current_token[0] != 'RPAREN':
             node.append(self.expression())

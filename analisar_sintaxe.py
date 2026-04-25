@@ -14,6 +14,7 @@ def analisar(caminho):
     with open(caminho, 'r', encoding='utf-8') as f:
         codigo = f.read()
         lista_tokens = scanner.ler_codigo(codigo)
+        lista_tokens = [t for t in lista_tokens if t[0] != 'COMMENT']
         for t in lista_tokens:
             print(t)
     

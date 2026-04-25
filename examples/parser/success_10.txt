@@ -1,40 +1,15 @@
-(module processador-neural racket
-    (provide treinar-neuronio processar-camada)
+(module teste-float racket
+    ;; Definindo uma constante com ponto
+    (define pi 3.14)
 
-    (define (funcao-ativacao x)
-        (if (> x 0)
-            x
-            0
-        )
+    ;; Operação aritmética com decimais
+    (define (calcular-area raio)
+        (* pi (* raio raio))
     )
 
-    (define (treinar-neuronio peso entrada bias)
-        (begin
-            (set! peso (+ peso (* entrada 0.01)))
-            (funcao-ativacao (+ (* peso entrada) bias))
-        )
-    )
+    ;; Testando um float negativo
+    (define ajuste -0.5)
 
-    (define (processar-camada lista-pesos entrada bias)
-        (if (>= (calcula-comprimento lista-pesos) 1)
-            (list 
-                (treinar-neuronio 0.5 entrada bias)
-                "processamento-em-curso"
-            )
-            "camada-vazia"
-        )
-    )
+    ;; Chamada simples
+    (calcular-area 10.0)
 )
-
-(define (loop-principal iteracoes)
-    (if (> iteracoes 0)
-        (begin
-            (display "Iterando...")
-            (loop-principal (- iteracoes 1))
-        )
-        "fim-do-treino"
-    )
-)
-
-(define resultado (loop-principal 100))
-(define configuracao (list 0.1 0.2 0.3))
