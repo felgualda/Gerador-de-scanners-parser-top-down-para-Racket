@@ -79,6 +79,10 @@ class Parser:
             node = self.begin_expression(lexema)
         elif token_type == 'ID' and lexema in ['when', 'unless']:
             node = self.when_unless_expression(lexema)
+        elif token_type == 'ID' and lexema == 'case':
+            node = self.case_expression()
+        elif (token_type == 'ID' and lexema == 'define-syntax') or token_type == 'KW_DEFINE_SYNTAXES':
+            node = self.define_syntax_expression()
         else:
             node = []
             while self.current_token and self.current_token[0] != 'RPAREN':
@@ -276,6 +280,33 @@ class Parser:
         node.append(self.expression())
         while self.current_token and self.current_token[0] != 'RPAREN':
             node.append(self.expression())
+        return node
+    
+    def case_expression(self):
+        node = [self.eat('ID')] 
+        node.append(self.expression())
+
+        while self.current_token and self.current_token[0] != 'RPAREN':
+            
+            if self.current_token[0] in ['LPAREN', 'LBRACKET']:
+                opener = self.current_token[0]
+                closer = 'RPAREN' if opener == 'LPAREN' else 'RBRACKET'
+                clause = [self.eat(opener)]
+                clause.append(self.expression()) 
+                
+                while self.current_token and self.current_token[0] != closer:
+                    clause.append(self.expression())
+                clause.append(self.eat(closer))
+                node.append(clause)
+            else:
+                self.report_error("Cláusula de 'case' malformada")
+                self.advance()
+        return node
+
+    def define_syntax_expression(self):
+        node = [self.eat('KW_DEFINE_SYNTAXES' if self.current_token[0] == 'KW_DEFINE_SYNTAXES' else 'ID')]
+        node.append(self.eat('ID'))
+        node.append(self.expression())
         return node
 
     def atom(self):
