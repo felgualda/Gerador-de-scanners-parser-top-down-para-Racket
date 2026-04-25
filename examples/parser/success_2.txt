@@ -1,22 +1,22 @@
-(define (verificar-status valor)
-    (if #t
-        (if #f
-            "impossivel"
-            (define resultado 100))
-        (define resultado -50)))
+(define (analise-complexa p1 p2 p3 p4)
+    (if (> (+ p1 p2) (* p3 p4))
+        (begin
+            (set! p1 (* p1 2))
+            (if (> p1 100) 
+                "estado-critico" 
+                "estado-normal"
+            )
+        )
+        (if (< p2 0)
+            "valor-negativo"
+            (if (= p3 0) 
+                "erro-divisao-zero" 
+                "processamento-ok"
+            )
+        )
+    )
+)
 
-(define (processar-dados x y)
-    (if (#t)
-        (define soma 500)
-        (define erro "falha-no-processamento")))
+(define total (analise-complexa 10 20 5 2))
 
-(if #t
-    (define lista-teste (list 1 2 3))
-    (if #f
-        (define sub-lista (list 10 20))
-        300))
-
-(define (finalizar)
-    (if #t
-        "encerrado"
-        "erro-desconhecido"))
+(define verificacao-final (if #t "sistema-ativo" "sistema-erro"))

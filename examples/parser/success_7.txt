@@ -1,0 +1,16 @@
+(define lista-fixa (quote (a b c)))
+
+(define (calcula-let x)
+    (let ([dobro (* x 2)]
+          [triplo (* x 3)])
+        (+ dobro triplo)
+    )
+)
+
+(define (teste-let-values a b)
+    (let-values ([(soma prod) (values (+ a b) (* a b))])
+        (list soma prod)
+    )
+)
+
+(define simbolo-unico (quote status))
