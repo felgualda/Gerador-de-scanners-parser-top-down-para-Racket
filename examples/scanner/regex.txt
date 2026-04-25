@@ -1,25 +1,36 @@
-
 LPAREN \(
 RPAREN \)
 LBRACKET \[
 RBRACKET \]
 DOT \.
+
 KW_MODULE_STAR module\*
 KW_MODULE module
+KW_DEFINE_VALUES define-values
+KW_DEFINE_SYNTAXES define-syntaxes
+KW_DEFINE define
 KW_BEGIN_FOR_SYNTAX begin-for-syntax
 KW_BEGIN0 begin0
 KW_BEGIN begin
-KW_DEFINE_VALUES define-values
-KW_DEFINE_SYNTAXES define-syntaxes
-KW_CASE_LAMBDA case-lambda
-KW_IF if 
 KW_LETREC_VALUES letrec-values
 KW_LET_VALUES let-values
+KW_LET let
+KW_CASE_LAMBDA case-lambda
+KW_CASE case
+KW_IF if
 KW_SET set!
 KW_QUOTE_SYNTAX quote-syntax
 KW_QUOTE quote
+KW_LAMBDA lambda
+KW_COND cond
+KW_ELSE else
+KW_AND and
+KW_OR or
+KW_WHEN when
+KW_UNLESS unless
+
 KW_WITH_CONT_MARK with-continuation-mark
-KW_EXPRESSION #%expression -> 
+KW_EXPRESSION #%expression
 KW_PLAIN_MOD_BEGIN #%plain-module-begin
 KW_PROVIDE #%provide
 KW_DECLARE #%declare
@@ -30,9 +41,11 @@ KW_TOP #%top
 KW_VAR_REF #%variable-reference
 FALSE #f
 TRUE #t
-KW_LOCAL #:local 
+KW_LOCAL #:local
+
 FLOAT (-|\+)?[0-9]+\.[0-9]+
 INT (-|\+)?[0-9]+
 STRING \"[ a-zA-Z0-9!@#$%&\(\),\.:;-]*\"
+
 COMMENT ;[a-zA-Z0-9\ \!\@\#\$\%\&\*\(\)\-\_\+\=\[\]\{\}\;\:\'\"\,\.\<\>\/\?\áàâãéèêíìîóòôõúùûçÁÀÂÃÉÈÊÍÌÎÓÒÔÕÚÙÛÇ]*
 ID [a-zA-Z\+\-\*\/\?\!\=\>\<][a-zA-Z0-9\+\-\*\/\?\!\=\>\<]*

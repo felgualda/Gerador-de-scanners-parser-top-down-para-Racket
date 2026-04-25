@@ -53,35 +53,33 @@ class Parser:
         token_type = self.current_token[0]
         lexema = self.current_token[1]
         
-        if token_type == 'KW_IF':
+        if token_type == 'KW_IF' or (token_type == 'ID' and lexema == 'if'):
             node = self.if_expression()
-        elif token_type == 'ID' and lexema == 'define':
+        elif token_type == 'KW_DEFINE' or (token_type == 'ID' and lexema == 'define'): 
             node = self.define_expression()
-        elif token_type == 'ID' and lexema == 'set!':
+        elif token_type == 'KW_SET' or (token_type == 'ID' and lexema == 'set!'): 
             node = self.set_expression()
-        elif token_type == 'ID' and lexema == 'lambda':
+        elif token_type == 'KW_LAMBDA' or (token_type == 'ID' and lexema == 'lambda'): 
             node = self.lambda_expression()
-        elif token_type == 'ID' and lexema == 'let':
+        elif token_type == 'KW_LET' or (token_type == 'ID' and lexema == 'let'):
             node = self.let_expression('let')
-        elif token_type == 'ID' and lexema == 'let-values':
-            node = self.let_expression('let-values')
         elif token_type == 'KW_QUOTE' or (token_type == 'ID' and lexema == 'quote'):
             node = self.quote_expression()
         elif token_type == 'KW_MODULE' or (token_type == 'ID' and lexema == 'module'):
             node = self.module_expression()
-        elif token_type == 'ID' and lexema == 'cond':
+        elif token_type == 'KW_COND' or (token_type == 'ID' and lexema == 'cond'):
             node = self.cond_expression()
-        elif token_type == 'ID' and lexema in ['and', 'or']:
-            node = self.and_or_expression(lexema)
-        elif token_type == 'ID' and lexema == 'define-values':
+        elif token_type in ['KW_AND', 'KW_OR'] or (token_type == 'ID' and lexema in ['and', 'or']):
+            node = self.and_or_expression()
+        elif token_type == 'KW_DEFINE_VALUES' or (token_type == 'ID' and lexema == 'define-values'):
             node = self.define_values_expression()
-        elif token_type == 'ID' and lexema in ['begin', 'begin0']:
+        elif token_type in ['KW_BEGIN', 'KW_BEGIN0'] or (token_type == 'ID' and lexema in ['begin', 'begin0']):
             node = self.begin_expression(lexema)
-        elif token_type == 'ID' and lexema in ['when', 'unless']:
-            node = self.when_unless_expression(lexema)
-        elif token_type == 'ID' and lexema == 'case':
+        elif token_type in ['KW_WHEN', 'KW_UNLESS'] or (token_type == 'ID' and lexema in ['when', 'unless']):
+            node = self.when_unless_expression()
+        elif token_type == 'KW_CASE' or (token_type == 'ID' and lexema == 'case'):
             node = self.case_expression()
-        elif (token_type == 'ID' and lexema == 'define-syntax') or token_type == 'KW_DEFINE_SYNTAXES':
+        elif token_type == 'KW_DEFINE_SYNTAXES' or (token_type == 'ID' and lexema in ['define-syntax', 'define-syntaxes']):
             node = self.define_syntax_expression()
         else:
             node = []
@@ -109,8 +107,9 @@ class Parser:
         return node
 
     def define_expression(self):
-        node = [self.eat('ID')]
-        
+        tipo_esperado = 'KW_DEFINE' if self.current_token[0] == 'KW_DEFINE' else 'ID'
+        node = [self.eat(tipo_esperado)]
+
         if self.current_token and self.current_token[0] == 'LPAREN':
             sig = [self.eat('LPAREN')]
             while self.current_token and self.current_token[0] != 'RPAREN':
@@ -160,7 +159,7 @@ class Parser:
         return node
     
     def lambda_expression(self):
-        node = [self.eat('KW_PLAIN_LAMBDA' if self.current_token[0] == 'KW_PLAIN_LAMBDA' else 'ID')]
+        node = [self.eat('KW_LAMBDA' if self.current_token[0] == 'KW_LAMBDA' else 'ID')]
         if self.current_token and self.current_token[0] == 'LPAREN':
             node.append(self.expression()) 
         else:
@@ -184,8 +183,9 @@ class Parser:
         return node
     
     def let_expression(self, nome_let):
-        node = [self.eat('ID' if nome_let == 'let' else 'ID')] 
-        
+        tipo_esperado = 'KW_LET' if self.current_token[0] == 'KW_LET' else 'ID'
+        node = [self.eat(tipo_esperado)]
+
         if self.current_token and self.current_token[0] in ['LPAREN', 'LBRACKET']:
             opener = self.current_token[0]
             closer = 'RPAREN' if opener == 'LPAREN' else 'RBRACKET'
@@ -221,7 +221,8 @@ class Parser:
         return node
     
     def cond_expression(self):
-        node = [self.eat('ID')]
+        tipo = 'KW_COND' if self.current_token[0] == 'KW_COND' else 'ID'
+        node = [self.eat(tipo)]
         count = 0
         while self.current_token and self.current_token[0] != 'RPAREN':
             if self.current_token[0] in ['LPAREN', 'LBRACKET']:
@@ -242,14 +243,16 @@ class Parser:
             self.report_error("O 'cond' exige pelo menos uma cláusula")
         return node
     
-    def and_or_expression(self, nome):
-        node = [self.eat('ID')]
+    def and_or_expression(self):
+        tipo = self.current_token[0] if self.current_token[0] in ['KW_AND', 'KW_OR'] else 'ID'
+        node = [self.eat(tipo)]
         while self.current_token and self.current_token[0] != 'RPAREN':
             node.append(self.expression())
         return node
-
+    
     def begin_expression(self, nome):
-        node = [self.eat('ID')]
+        tipo = self.current_token[0] if self.current_token[0] in ['KW_BEGIN', 'KW_BEGIN0'] else 'ID'
+        node = [self.eat(tipo)]
         count = 0
         while self.current_token and self.current_token[0] != 'RPAREN':
             node.append(self.expression())
@@ -259,7 +262,8 @@ class Parser:
         return node
 
     def define_values_expression(self):
-        node = [self.eat('ID')] 
+        tipo = 'KW_DEFINE_VALUES' if self.current_token[0] == 'KW_DEFINE_VALUES' else 'ID'
+        node = [self.eat(tipo)] 
         
         if self.current_token and self.current_token[0] == 'LPAREN':
             ids = [self.eat('LPAREN')]
@@ -273,21 +277,22 @@ class Parser:
                 node.append(self.eat('ID'))
 
         node.append(self.expression())
-        return node 
+        return node
 
-    def when_unless_expression(self, nome):
-        node = [self.eat('ID')]
+    def when_unless_expression(self):
+        tipo = self.current_token[0] if self.current_token[0] in ['KW_WHEN', 'KW_UNLESS'] else 'ID'
+        node = [self.eat(tipo)]
         node.append(self.expression())
         while self.current_token and self.current_token[0] != 'RPAREN':
             node.append(self.expression())
         return node
     
     def case_expression(self):
-        node = [self.eat('ID')] 
+        tipo = 'KW_CASE' if self.current_token[0] == 'KW_CASE' else 'ID'
+        node = [self.eat(tipo)] 
         node.append(self.expression())
 
         while self.current_token and self.current_token[0] != 'RPAREN':
-            
             if self.current_token[0] in ['LPAREN', 'LBRACKET']:
                 opener = self.current_token[0]
                 closer = 'RPAREN' if opener == 'LPAREN' else 'RBRACKET'
@@ -315,18 +320,21 @@ class Parser:
         
         tipos_aceitos = [
             'ID', 'INT', 'FLOAT', 'TRUE', 'FALSE', 'STRING', 'KW_IF',
-            'KW_MODULE_STAR', 'KW_MODULE', 'KW_BEGIN_FOR_SYNTAX', 'KW_BEGIN0',
-            'KW_BEGIN', 'KW_DEFINE_VALUES', 'KW_DEFINE_SYNTAXES', 'KW_CASE_LAMBDA',
-            'KW_LETREC_VALUES', 'KW_LET_VALUES', 'KW_SET', 'KW_QUOTE_SYNTAX',
-            'KW_QUOTE', 'KW_WITH_CONT_MARK', 'KW_EXPRESSION', 'KW_PLAIN_MOD_BEGIN',
-            'KW_PROVIDE', 'KW_DECLARE', 'KW_REQUIRE', 'KW_PLAIN_LAMBDA',
-            'KW_PLAIN_APP', 'KW_TOP', 'KW_VAR_REF', 'KW_LOCAL', 'DOT',
-            'LBRACKET', 'RBRACKET'
+            'KW_MODULE_STAR', 'KW_MODULE', 'KW_DEFINE', 'KW_LAMBDA',
+            'KW_LET', 'KW_COND', 'KW_ELSE', 'KW_AND', 'KW_OR',
+            'KW_WHEN', 'KW_UNLESS', 'KW_CASE', 'KW_BEGIN_FOR_SYNTAX',
+            'KW_BEGIN0', 'KW_BEGIN', 'KW_DEFINE_VALUES', 'KW_DEFINE_SYNTAXES',
+            'KW_CASE_LAMBDA', 'KW_LETREC_VALUES', 'KW_LET_VALUES', 'KW_SET',
+            'KW_QUOTE_SYNTAX', 'KW_QUOTE', 'KW_WITH_CONT_MARK', 'KW_EXPRESSION',
+            'KW_PLAIN_MOD_BEGIN', 'KW_PROVIDE', 'KW_DECLARE', 'KW_REQUIRE',
+            'KW_PLAIN_LAMBDA', 'KW_PLAIN_APP', 'KW_TOP', 'KW_VAR_REF',
+            'KW_LOCAL', 'DOT', 'LBRACKET', 'RBRACKET'
         ]
         
         if token[0] == 'DOT':
             self.report_error("Uso inválido do ponto '.' fora de uma lista ou em posição incorreta")
             return self.eat('DOT')
+            
         if token[0] in tipos_aceitos:
             return self.eat(token[0])
         else:
