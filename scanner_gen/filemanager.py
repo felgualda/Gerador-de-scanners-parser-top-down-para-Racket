@@ -87,7 +87,7 @@ def ler_codigo(codigo_fonte):
             posicao = pos_ultimo_final + 1
         else:
             print(f"Erro Léxico na linha {{linha_atual}}: Caractere inesperado '{{codigo_fonte[posicao]}}'")
-            posicao += 1  # Pula o caractere inválido para não entrar em loop infinito
+            posicao += 1
 
     return tokens
 

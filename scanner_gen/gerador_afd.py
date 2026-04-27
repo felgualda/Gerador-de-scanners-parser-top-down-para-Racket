@@ -1,4 +1,3 @@
-
 from .EDs.estado_afd import AFD, EstadoAFD
 
 
@@ -49,6 +48,7 @@ class Subset_construction:
                 if simbolo != 'epsilon' and simbolo != '' and simbolo is not None:
                     alfabeto.add(simbolo)
                 for dest in destinos:
+
                     if dest not in visitados:
                         fila.append(dest)
 
