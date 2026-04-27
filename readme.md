@@ -27,7 +27,8 @@ Definição da classe *LeitorRegex*, que trata as expressões regulares recebida
 ### ▪ scanner_gen/scan.py:
 Definição da classe *Scan*, que contém a função única *ler()*, que recebe um arquivo de texto e um AFD e verifica se a cadeia é aceita. Além disso, para cada token identificado, a função põe a tupla (Token, cadeia) na lista retornada.
 
+### ▪ parser/parser_top_down.py:
+Definição da classe *Parser*, um analisador sintático preditivo Top-Down (Descida Recursiva). Contém a lógica para processar gramáticas complexas do Racket, como `define`, `if`, `let`, `cond`, `lambda` e recursividade de expressões.
 
-## **TODO**:
-### Parser:
-- Ainda não iniciado.
+### ▪ analisar_sintaxe.py:
+Script principal de interface do Parser. Realiza a ponte entre o Scanner e o Parser, aplicando filtros de limpeza (remoção de comentários e espaços) e exibindo a Árvore Sintática Abstrata (AST) formatada para o usuário.
