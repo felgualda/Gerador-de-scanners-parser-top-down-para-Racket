@@ -1,23 +1,17 @@
-
 class Filemanager:
     def carregar(caminho):
         regras = []
-    
         with open(caminho, 'r', encoding='utf-8') as arquivo:
             for linha in arquivo:
                 linha = linha.strip()
-                
                 if not linha:
                     continue
-                    
                 partes = linha.split(maxsplit=1)
-                
                 nome_token = partes[0]
                 regex_str = partes[1]
                 regras.append((nome_token, regex_str))
-                    
         return regras
-    
+
     def gerar_arquivo_scanner(afd, nome_arquivo="scanner.py"):
         tabela_str = "{\n"
         finais_str = "{\n"
@@ -46,6 +40,7 @@ ESTADO_INICIAL = {afd.inicio.id}
 def ler_codigo(codigo_fonte):
     tokens = []
     linha_atual = 1
+    coluna_atual = 1 
     posicao = 0
     tamanho = len(codigo_fonte)
 
@@ -55,6 +50,9 @@ def ler_codigo(codigo_fonte):
         if char_atual in ' \\t\\n\\r':
             if char_atual == '\\n':
                 linha_atual += 1
+                coluna_atual = 1 
+            else:
+                coluna_atual += 1
             posicao += 1
             continue
 
@@ -62,6 +60,8 @@ def ler_codigo(codigo_fonte):
         lexema_atual = ""
         ultimo_estado_final = None
         pos_ultimo_final = -1
+        
+        coluna_inicio = coluna_atual 
 
         temp_pos = posicao
         while temp_pos < tamanho:
@@ -82,12 +82,15 @@ def ler_codigo(codigo_fonte):
         if ultimo_estado_final is not None:
             token_id = ESTADOS_FINAIS[ultimo_estado_final]
             lexema_real = codigo_fonte[posicao : pos_ultimo_final + 1]
-            tokens.append((token_id, lexema_real, linha_atual))
             
+            tokens.append((token_id, lexema_real, linha_atual, coluna_inicio))
+            
+            coluna_atual += len(lexema_real)
             posicao = pos_ultimo_final + 1
         else:
-            print(f"Erro Léxico na linha {{linha_atual}}: Caractere inesperado '{{codigo_fonte[posicao]}}'")
+            print(f"Erro Léxico na linha {{linha_atual}}, coluna {{coluna_atual}}: Caractere inesperado '{{codigo_fonte[posicao]}}'")
             posicao += 1
+            coluna_atual += 1
 
     return tokens
 

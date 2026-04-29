@@ -30,17 +30,14 @@ def analisar(caminho):
     else:
         print("\n--- FALHA NA ACEITAÇÃO (Lista de Erros) ---")
         for i, erro in enumerate(parser.errors, 1):
-           print(f"{i}. {erro}")
+           print(f"\n{i}. {erro}")
 
 def print_tree(node, prefix="", is_last=True):
-    # Define os caracteres de conexão
     connector = "└── " if is_last else "├── "
     
     if isinstance(node, list):
-        # Printa o início da lista
         print(prefix + connector + "[")
         
-        # Novo prefixo para os filhos
         new_prefix = prefix + ("    " if is_last else "│   ")
         
         for i, child in enumerate(node):
@@ -49,7 +46,6 @@ def print_tree(node, prefix="", is_last=True):
             
         print(prefix + ("    " if is_last else "│   ") + "]")
     else:
-        # Printa o token (átomo)
         print(prefix + connector + str(node))
 
 if __name__ == '__main__':

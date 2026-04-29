@@ -4,6 +4,7 @@
 ## **Como executar?**
 Gerador de scanner: ```py gerar_scanner.py <caminho_lista_regex>``` \
 Analisador sintático (parser): ```py analisar_sintaxe.py <caminho_codigo_racket>```
+Makefile (roda Gerador de scanner e Analisador sintático para todos os testes em "examples/parser"): ```make test```
 
 ## **O que temos?**
 ### ▪ scanner_gen/EDs/estado_afd.py:

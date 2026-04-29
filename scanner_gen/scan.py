@@ -12,6 +12,7 @@ class Scan:
 
             for linha in arquivo:
                 num_linha += 1
+                coluna = 0
                 linha = linha.strip()
                 
                 if not linha:
@@ -34,15 +35,16 @@ class Scan:
                         i += 1
                     else:
                         if estado_atual.final:
-                            resultado.append((estado_atual.token_id, "".join(pilha_simbolos), num_linha))
+                            resultado.append((estado_atual.token_id, "".join(pilha_simbolos), num_linha, coluna))
                             pilha_simbolos.clear()
                             estado_atual = afd.inicio
                         else:
                             print("CADEIA NÃO ACEITA")
                             break
+                    coluna += 1
 
                 if pilha_simbolos and estado_atual.final:       
-                    resultado.append((estado_atual.token_id, "".join(pilha_simbolos), num_linha)) 
+                    resultado.append((estado_atual.token_id, "".join(pilha_simbolos), num_linha, coluna)) 
                     pilha_simbolos.clear() 
                     estado_atual = afd.inicio               
 
